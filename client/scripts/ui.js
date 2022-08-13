@@ -262,6 +262,18 @@ class ReceiveDialog extends Dialog {
         $a.href = url;
         $a.download = file.name;
 
+        // Clipboard API is only allowed in user events.
+        const $copy = this.$el.querySelector('#copy');
+        $copy.onclick = () => {
+            const clipboardPromise = new Promise((resolve) => {
+                resolve(file.blob);
+              });
+              
+              navigator.clipboard.write([new ClipboardItem({ [file.mime]: clipboardPromise })])
+                .then(function () { console.log('copied'); })
+                .catch(function (error) { alert(error); });
+        };
+
         if(this._autoDownload()){
             $a.click()
             return
